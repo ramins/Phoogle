@@ -63,8 +63,10 @@ headless; that is expected.
 - `visuals.js`: world animation, crowd rendering, camera. `hud.js`: HUD, banners, popups.
 - `screens.js`: menu, how to play, pause, dead + checkpoint restart, win + stars, endless over.
 - `leaderboard.js`: uses claude.ai artifact `db`/`user` capabilities when present, else localStorage.
-  On itch.io this is per-device only. Replace in Phase 1 (see below).
-- `flow.js`: start level / endless / checkpoint, menu button routing. `input.js`: keyboard, gamepad, touch.
+  On itch.io this is per-device only, so the menu says "Your best runs" instead of "Leaderboard"
+  (`sharedBoard()`). Replace in Phase 1 (see below).
+- `flow.js`: start level / endless / checkpoint, menu button routing. `input.js`: keyboard, gamepad, touch, and the
+  "Click to play" gate shown only when embedded in an iframe (itch) without focus.
 - `main.js`: main loop, debug hooks, boot.
 - Coordinates: camera looks down +z; screen-left is world +x.
 - Debug hooks: `window.UCR = {C,T,G,CFG,LEVELS,P,startLevel,startEndless,tryJump,input,sim,state}`.

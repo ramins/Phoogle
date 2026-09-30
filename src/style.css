@@ -89,5 +89,8 @@ p{font-size:18px;line-height:1.4;margin:0 0 14px;color:#d5dde6;max-width:60ch}
 .board li b{font-family:var(--display);font-weight:400}
 .board li.me{color:var(--gold)}
 .note{font-size:15px;color:var(--muted)}
+#focusGate{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(20,28,40,.55)}
+#focusGate[hidden]{display:none}
+#focusBtn{font-size:24px;padding:16px 28px}
 @media (prefers-reduced-motion: reduce){ #banner,#hint,#targetFill{transition:none} }
 @media (max-width:560px){ #lvlName{font-size:15px} .chip{font-size:13px;padding:3px 8px} .chip b{font-size:13px} #badge{font-size:21px} }

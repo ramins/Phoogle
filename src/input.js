@@ -11,6 +11,13 @@ addEventListener('keydown',e=>{ if(KEYS[e.code]){ input[KEYS[e.code]]=true; e.pr
   if((e.code==='Escape'||e.code==='KeyP')&&!e.repeat){ if(G.state==='play') pauseScreen(); else if(G.state==='pause'){ hide(); G.state='play'; } } });
 addEventListener('keyup',e=>{ if(KEYS[e.code]) input[KEYS[e.code]]=false; });
 addEventListener('blur',()=>{ for(const k of ['l','r','up','down','sprint']) input[k]=false; if(G.state==='play') pauseScreen(); });
+// Embedded in an iframe (itch.io), key presses only arrive after the player clicks the game.
+// Ask for that click up front instead of letting the first keys vanish.
+const gate=$('#focusGate');
+let embedded=false; try{ embedded=window.self!==window.top; }catch(e){ embedded=true; }
+if(embedded&&!document.hasFocus()) gate.hidden=false;
+gate.addEventListener('pointerdown',e=>{ e.preventDefault(); gate.hidden=true; window.focus(); });
+addEventListener('keydown',()=>{ gate.hidden=true; }); // keys arriving means focus is already fine
 let drag=null;
 canvas.addEventListener('pointerdown',e=>{ if(G.state!=='play') return; drag={id:e.pointerId,x:e.clientX,y:e.clientY,t:performance.now(),jumped:false}; canvas.setPointerCapture(e.pointerId); });
 canvas.addEventListener('pointermove',e=>{ if(!drag||e.pointerId!==drag.id) return; const dx=e.clientX-drag.x; drag.x=e.clientX; input.drag+=dx*(16/Math.min(innerWidth,900));

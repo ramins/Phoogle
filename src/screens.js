@@ -4,7 +4,7 @@ import { resetTrack } from './track.js';
 import { LEVELS } from './levels.js';
 import { hpPool, resetCrowd, total } from './crowd.js';
 import { fmt, hud } from './hud.js';
-import { renderBoard, submitScore } from './leaderboard.js';
+import { renderBoard, sharedBoard, submitScore } from './leaderboard.js';
 
 /* ================= screens ================= */
 export const screen=$('#screen'), panel=$('#panel');
@@ -18,7 +18,7 @@ export function menuScreen(){
   show(`<h1 class="title">Crowd<span class="row2">Runner</span></h1>
     <p class="sub">Grow the squad through gates, squeeze it through funnels to merge heavier units, then break the keep and its Warden.</p>
     <div class="levels">${lv}</div>
-    <div class="btns"><button class="btn primary" data-act="endless">Endless run</button><button class="btn" data-act="board">Leaderboard</button><button class="btn" data-act="help">How to play</button></div>`,'menu');
+    <div class="btns"><button class="btn primary" data-act="endless">Endless run</button><button class="btn" data-act="board">${sharedBoard()?'Leaderboard':'Your best runs'}</button><button class="btn" data-act="help">How to play</button></div>`,'menu');
 }
 export function helpScreen(){ show(`<h2>How to play</h2>
   <dl class="keys">
@@ -47,5 +47,5 @@ async function endlessOver(){ const score=Math.floor(C.z); const isBest=score>G.
   show(`<h2>Run over</h2><dl class="stats"><dt>Distance</dt><dd>${score} m</dd><dt>Your best</dt><dd>${G.endlessBest} m</dd></dl><div id="lb"><p class="note">Loading scores...</p></div>
   <div class="btns"><button class="btn primary" data-act="endless">Run again</button><button class="btn" data-act="menu">Main menu</button></div>`);
   const saved=await submitScore(G.endlessBest); renderBoard($('#lb'),saved); }
-export async function boardScreen(){ show(`<h2>Endless leaderboard</h2><div id="lb"><p class="note">Loading scores...</p></div><div class="btns"><button class="btn primary" data-act="menu">Back</button></div>`); renderBoard($('#lb')); }
+export async function boardScreen(){ show(`<h2>${sharedBoard()?'Endless leaderboard':'Your best runs'}</h2><div id="lb"><p class="note">Loading scores...</p></div><div class="btns"><button class="btn primary" data-act="menu">Back</button></div>`); renderBoard($('#lb')); }
 function attract(){ resetTrack(LEVELS[0].seed); LEVELS[0].build(); resetCrowd([26,4,1],8); G.mode='campaign'; }
