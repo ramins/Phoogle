@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crowd Runner: playable blueprint</title>
+</head>
+<body>
+<canvas id="c" aria-label="Game view"></canvas>
+
+<div id="hud" hidden>
+  <div id="top">
+    <div id="lvl">
+      <div id="lvlName"></div>
+      <div id="section"></div>
+      <div id="prog"><div id="progFill"></div><div id="progMarks"></div></div>
+      <div id="tiers">
+        <div class="chip"><i style="background:var(--blue)"></i><span>Infantry</span><b id="n0">0</b></div>
+        <div class="chip"><i style="background:var(--teal)"></i><span>Gunners</span><b id="n1">0</b></div>
+        <div class="chip"><i style="background:var(--gold)"></i><span>Titans</span><b id="n2">0</b></div>
+        <div class="chip"><span>HP pool</span><b id="hp">0</b></div>
+      </div>
+    </div>
+    <button id="pauseBtn" aria-label="Pause">II</button>
+  </div>
+  <div id="target" hidden><div id="targetName"></div><div class="bar"><div id="targetFill"></div></div></div>
+  <div id="badge">0</div>
+  <div id="banner"></div>
+  <div id="popups"></div>
+  <div id="hint"></div>
+  <div id="touch" hidden><button id="sprintBtn" aria-label="Sprint">Sprint</button><button id="jumpBtn" aria-label="Jump">Jump</button></div>
+</div>
+
+<div id="screen"><div class="panel menu" id="panel"><p>Loading the track...</p></div></div>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

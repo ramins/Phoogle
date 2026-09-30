@@ -1,16 +1,26 @@
-"""Shared headless-browser harness. Loads game/index.html from disk, blocks network (fonts fall back),
-injects the bot, and exposes run_until(). Requires: pip install playwright && playwright install chromium"""
-import asyncio, pathlib
+"""Shared headless-browser harness. Builds the game, loads the single-file build (dist/web/index.html)
+from disk with the network blocked, injects the bot, and exposes run_until().
+Requires: npm ci, pip install playwright && playwright install chromium.
+Set UCR_SKIP_BUILD=1 to test the existing dist/web build without rebuilding."""
+import asyncio, os, pathlib, shutil, subprocess
 from playwright.async_api import async_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-GAME = (ROOT / "game" / "index.html").as_uri()
+GAME = ROOT / "dist" / "web" / "index.html"
 BOT = (ROOT / "tests" / "bot.js").read_text()
 # Software GL so it runs on CI boxes with no GPU.
 GL_ARGS = ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"]
 
+_built = False
+def build():
+    """Rebuild once per process so tests never run against a stale bundle."""
+    global _built
+    if _built or os.environ.get("UCR_SKIP_BUILD"): return
+    subprocess.run([shutil.which("npm") or "npm", "run", "build", "--silent"], cwd=ROOT, check=True, stdout=subprocess.DEVNULL)
+    _built = True
+
 async def open_game(p, width=1100, height=700):
-    import os
+    build()
     exe = os.environ.get('CHROME_PATH')
     b = await p.chromium.launch(args=GL_ARGS, **({'executable_path': exe} if exe else {}))
     pg = await b.new_page(viewport={"width": width, "height": height})
@@ -18,7 +28,7 @@ async def open_game(p, width=1100, height=700):
     pg.on("pageerror", lambda e: errs.append("PAGEERROR: " + str(e)))
     pg.on("console", lambda m: errs.append(m.text) if m.type == "error" and "Failed to load" not in m.text else None)
     await pg.route("http*://**/*", lambda r: r.abort())  # game must run fully offline
-    await pg.goto(GAME)
+    await pg.goto(GAME.as_uri())
     await pg.wait_for_timeout(2500)
     await pg.evaluate(BOT)
     return b, pg, errs
